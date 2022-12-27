@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { useNavigate, useOutlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 
 export default function PublicRoutes() {
   const navigate = useNavigate();
-  const Outlet = useOutlet();
   useEffect(() => {
     fetchData();
   }, [navigate]);
@@ -14,5 +13,5 @@ export default function PublicRoutes() {
       return;
     }
   }
-  return Outlet;
+  return <Outlet />;
 }

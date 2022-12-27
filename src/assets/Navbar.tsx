@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { api } from "../constant/constant";
 import {
@@ -18,14 +18,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate, NavLink } from "react-router-dom";
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
+function ResponsiveAppBar(props: any) {
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,35 +37,12 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const [data, setData] = useState<any>({});
 
   const handleLogout = async () => {
     window.localStorage.removeItem("jwt");
     navigate("/login");
   };
-
-  React.useEffect(() => {
-    checkAdmin();
-  }, [navigate]);
-
-  async function checkAdmin() {
-    try {
-      const token = window.localStorage.getItem("jwt");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      const response = await axios.get(`${api}/user/admin`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setIsAdmin(true);
-    } catch (error) {
-      setIsAdmin(false);
-      navigate("/");
-      return;
-    }
-  }
 
   return (
     // Logo + Judul
@@ -151,7 +123,7 @@ function ResponsiveAppBar() {
                 Product
               </Button>
             </NavLink>
-            {isAdmin && (
+            {props.admin ? (
               <>
                 <NavLink to="/add" style={{ textDecoration: "none" }}>
                   <Button
@@ -161,16 +133,31 @@ function ResponsiveAppBar() {
                   </Button>
                 </NavLink>
               </>
+            ) : (
+              <>
+                <NavLink to="/cart" style={{ textDecoration: "none" }}>
+                  <Button sx={{ my: 2, color: "white", display: "block" }}>
+                    Cart
+                  </Button>
+                </NavLink>
+                <NavLink to="/History" style={{ textDecoration: "none" }}>
+                  <Button sx={{ my: 2, color: "white", display: "block" }}>
+                    History
+                  </Button>
+                </NavLink>
+              </>
             )}
           </Box>
           {/* End Nav Menu */}
 
-          <Divider orientation="vertical" variant="middle" flexItem />
+          <Divider
+            sx={{ mx: 3 }}
+            orientation="vertical"
+            variant="middle"
+            flexItem
+          />
 
           <Button
-            sx={{
-              mx: 3,
-            }}
             size="small"
             variant="contained"
             color="error"

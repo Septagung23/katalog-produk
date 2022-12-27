@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useOutlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { api } from "../constant/constant";
 
-export default function PrivateRoutes() {
-  const [data, setData] = useState("");
+export default function AdminRoutes() {
+  const [data, setData] = useState<any>({});
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
-  const Outlet = useOutlet();
 
   useEffect(() => {
     fetchData();
@@ -25,10 +25,15 @@ export default function PrivateRoutes() {
         },
       });
       setData(response.data);
-    } catch (error) {
+      if (data.user.role === "admin") {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error: any) {
       console.log(error);
     }
   }
-
-  return Outlet;
+  console.log(data);
+  return <Outlet context={isAdmin} />;
 }

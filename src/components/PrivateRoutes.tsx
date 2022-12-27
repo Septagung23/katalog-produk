@@ -1,35 +1,33 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useOutlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { api } from "../constant/constant";
 
-export default function AdminRoutes() {
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+export default function PrivateRoutes() {
+  const [data, setData] = useState<any>({});
   const navigate = useNavigate();
-  const Outlet = useOutlet();
 
   useEffect(() => {
-    checkAdmin();
+    fetchData();
   }, [navigate]);
 
-  async function checkAdmin() {
+  async function fetchData() {
     try {
       const token = window.localStorage.getItem("jwt");
       if (!token) {
         navigate("/login");
         return;
       }
-      const response = await axios.get(`${api}/user/admin`, {
+      const response = await axios.get(`${api}/user/check`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setIsAdmin(true);
-    } catch (error) {
-      setIsAdmin(false);
-      navigate("/");
-      return;
+      setData(response.data);
+    } catch (error: any) {
+      console.log(error);
     }
   }
-  return Outlet;
+  console.log(data);
+  return <Outlet />;
 }

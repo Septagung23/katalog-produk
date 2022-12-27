@@ -11,10 +11,11 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../constant/constant";
 
-export default function BasicCard() {
+export default function BasicCard(props: any) {
   const [product, setProduct] = useState<any[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [data, setData] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,30 +36,6 @@ export default function BasicCard() {
     }
   };
 
-  useEffect(() => {
-    checkAdmin();
-  }, [navigate]);
-
-  async function checkAdmin() {
-    try {
-      const token = window.localStorage.getItem("jwt");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      const response = await axios.get(`${api}/user/admin`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setIsAdmin(true);
-    } catch (error) {
-      setIsAdmin(false);
-      navigate("/");
-      return;
-    }
-  }
-
   let items;
   if (product) {
     items = product
@@ -78,15 +55,22 @@ export default function BasicCard() {
               }).format(p.price)}
             </Typography>
             <Typography variant="body2">{p.description}</Typography>
-            {isAdmin && (
-              <>
-                <Link to={`/edit/${p.id}`} style={{ textDecoration: "none" }}>
-                  <Button>Edit</Button>
-                </Link>
-                <Button onClick={() => deleteProduct(p.id)}>Delete</Button>
-              </>
-            )}
           </CardContent>
+          {props.admin && (
+            <>
+              <Link to={`/edit/${p.id}`} style={{ textDecoration: "none" }}>
+                <Button>Edit</Button>
+              </Link>
+              <Button color="error" onClick={() => deleteProduct(p.id)}>
+                Delete
+              </Button>
+            </>
+          )}
+          {!props.admin && (
+            <>
+              <Button sx={{ mx: 1 }}>Add to Cart</Button>
+            </>
+          )}
         </Card>
       ));
   }

@@ -83,9 +83,7 @@ export default function Add() {
           fullWidth
           id="outlined-SKU"
           label="SKU"
-          type="number"
           value={sku}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
           onChange={(event) => setSku(event.target.value)}
         />
         <label>Harga Produk</label>
