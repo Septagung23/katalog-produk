@@ -13,7 +13,8 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Checkbox,
+  Paper,
+  ThemeProvider,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { isAbsolute } from "path";
@@ -37,6 +38,8 @@ export default function History() {
       <Box
         sx={{
           width: "100%",
+          height: 1,
+          position: "fixed",
           display: "flex",
           flexDirection: "column",
           backgroundColor: "#dddddd",

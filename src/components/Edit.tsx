@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box } from "@mui/system";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Typography } from "@mui/material";
+import BuildCircleRoundedIcon from "@mui/icons-material/BuildCircleRounded";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ResponsiveAppBar from "../assets/Navbar";
 import { api } from "../constant/constant";
 
 export default function Edit() {
@@ -13,6 +13,7 @@ export default function Edit() {
   const [stock, setStock] = useState<string>("");
   const [sku, setSku] = useState<string>("");
   const [price, setPrice] = useState<string>("");
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +47,40 @@ export default function Edit() {
 
   return (
     <div>
-      <ResponsiveAppBar />
+      <Box
+        sx={{
+          width: "auto",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "50%",
+            display: "flex",
+            alignSelf: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            backgroundColor: "#bde0fe",
+            borderRadius: 5,
+            mt: 4,
+          }}
+        >
+          <BuildCircleRoundedIcon
+            fontSize="large"
+            sx={{ alignSelf: "center", mt: 2 }}
+          />
+          <Box
+            sx={{
+              alignSelf: "center",
+            }}
+          >
+            <Typography sx={{ p: 2 }} variant="h5">
+              Edit Product
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
       <Box
         component="form"
         onSubmit={updateProduct}

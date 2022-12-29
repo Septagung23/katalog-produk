@@ -1,4 +1,11 @@
-import { TextField, Box, Button, Typography } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Button,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -9,6 +16,7 @@ export default function Register() {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [values, setValues] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: any) => {
@@ -90,9 +98,10 @@ export default function Register() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
+          <FormControlLabel control={<Checkbox />} label="Show Password" />
           <Button
             type="submit"
-            sx={{ mt: 3, mb: 1 }}
+            sx={{ mt: 2, mb: 1 }}
             variant="contained"
             color="primary"
             size="medium"

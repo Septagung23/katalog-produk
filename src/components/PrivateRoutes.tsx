@@ -18,7 +18,7 @@ export default function PrivateRoutes() {
         navigate("/login");
         return;
       }
-      const response = await axios.get(`${api}/user/check`, {
+      const response = await axios.get(`${api}/auth/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,6 +28,5 @@ export default function PrivateRoutes() {
       console.log(error);
     }
   }
-  console.log(data);
   return <Outlet />;
 }

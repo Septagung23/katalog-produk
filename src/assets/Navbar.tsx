@@ -20,23 +20,17 @@ import { useNavigate, NavLink } from "react-router-dom";
 
 function ResponsiveAppBar(props: any) {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
   const [data, setData] = useState<any>({});
 
   const handleLogout = async () => {
@@ -102,15 +96,32 @@ function ResponsiveAppBar(props: any) {
               }}
             >
               <MenuItem>
-                <Typography textAlign="center">Product</Typography>
+                <NavLink to="/" style={{ textDecoration: "none" }}>
+                  <Button sx={{ my: 2, display: "block" }}>Product</Button>
+                </NavLink>
               </MenuItem>
               <MenuItem>
-                <Typography textAlign="center">Tambah</Typography>
+                {isAdmin ? (
+                  <>
+                    <NavLink to="/add" style={{ textDecoration: "none" }}>
+                      <Button sx={{ my: 2, display: "block", mr: 1 }}>
+                        Tambah
+                      </Button>
+                    </NavLink>
+                  </>
+                ) : (
+                  <>
+                    <NavLink to="/cart" style={{ textDecoration: "none" }}>
+                      <Button sx={{ my: 2, display: "block" }}>Cart</Button>
+                    </NavLink>
+                    <NavLink to="/History" style={{ textDecoration: "none" }}>
+                      <Button sx={{ my: 2, display: "block" }}>History</Button>
+                    </NavLink>
+                  </>
+                )}
               </MenuItem>
             </Menu>
           </Box>
-
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Box
             sx={{
               flexGrow: 1,

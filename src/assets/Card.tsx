@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import axios from "axios";
 import {
   TextField,
@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   Typography,
+  Modal,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../constant/constant";
@@ -15,7 +16,13 @@ export default function BasicCard(props: any) {
   const [product, setProduct] = useState<any[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [addToCart, setAddToCart] = useState<null | HTMLElement>(null);
   const [data, setData] = useState<string>("");
+  const [itemError, setItemError] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +43,25 @@ export default function BasicCard(props: any) {
     }
   };
 
+  const checkUser = async () => {
+    try {
+      await axios.get(`${api}/auth`);
+    } catch (error) {}
+  };
+
+  const addtoCart = async (e: any, productId: string) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${api}/item`, {
+        amount: parseInt(amount),
+        userId: props.id,
+        productId,
+      });
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   let items;
   if (product) {
     items = product
@@ -47,6 +73,9 @@ export default function BasicCard(props: any) {
           <CardContent>
             <Typography variant="h5" component="div">
               {p.name}
+            </Typography>
+            <Typography variant="caption" component="div">
+              {p.id}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               {new Intl.NumberFormat("id-ID", {
@@ -68,7 +97,54 @@ export default function BasicCard(props: any) {
           )}
           {!props.admin && (
             <>
-              <Button sx={{ mx: 1 }}>Add to Cart</Button>
+              <Button sx={{ mx: 1 }} onClick={handleOpen}>
+                Add to Cart
+              </Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box
+                  sx={{
+                    position: "absolute" as "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    bgcolor: "background.paper",
+                    border: "2px solid #000",
+                    boxShadow: 24,
+                    p: 4,
+                  }}
+                >
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                  >
+                    Amount of {p.name}
+                  </Typography>
+                  <TextField
+                    id="standard-basic"
+                    variant="standard"
+                    type="number"
+                    required
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                  />
+                  <Box
+                    component="form"
+                    onSubmit={(event) => addtoCart(event, p.id)}
+                    sx={{ mt: 2 }}
+                  >
+                    <Button variant="contained" type="submit">
+                      Add
+                    </Button>
+                  </Box>
+                </Box>
+              </Modal>
             </>
           )}
         </Card>

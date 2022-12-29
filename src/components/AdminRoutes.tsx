@@ -19,7 +19,7 @@ export default function AdminRoutes() {
         navigate("/login");
         return;
       }
-      const response = await axios.get(`${api}/user/check`, {
+      const response = await axios.get(`${api}/auth/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,6 +34,5 @@ export default function AdminRoutes() {
       console.log(error);
     }
   }
-  console.log(data);
-  return <Outlet context={isAdmin} />;
+  return <Outlet />;
 }
