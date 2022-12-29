@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { api } from "../constant/constant";
+import axios from "axios";
 import BoxSx from "../assets/Hero";
 import BasicCard from "../assets/Card";
 import ResponsiveAppBar from "../assets/Navbar";
@@ -31,7 +31,6 @@ export default function HalUtama() {
         },
       });
       setData(response.data);
-      console.log("RESULT:", response.data.user);
       if (response.data.user.role === "admin") {
         setIsAdmin(true);
       } else {

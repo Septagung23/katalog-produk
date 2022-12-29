@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import { api } from "../constant/constant";
+import { useUserId } from "./PrivateRoutes";
 import ResponsiveAppBar from "../assets/Navbar";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -14,23 +15,38 @@ import {
   TableContainer,
   TableRow,
   Checkbox,
+  Button,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 
 export default function Cart() {
   const [product, setProduct] = useState<any[]>([]);
-  const [query, setQuery] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { userId } = useUserId();
   const navigate = useNavigate();
+
   useEffect(() => {
-    getproduct();
+    getTransaction();
   }, []);
 
-  const getproduct = async () => {
-    const response = await axios.get(`${api}/product`);
-    setProduct(response.data);
+  const getTransaction = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`${api}/transaction/item/${userId}`);
+      // const res = await axios.get(`${api}/product`);
+      setProduct(res.data);
+      setIsLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      setIsLoading(false);
+    }
   };
 
+  if (isLoading) {
+    return <h1 style={{ top: "50%", left: "50%" }}>Wait a Sec ...</h1>;
+  }
+
+  console.log("Data : ", product);
   return (
     <>
       <ResponsiveAppBar admin={isAdmin} />
@@ -70,20 +86,16 @@ export default function Cart() {
                     <TableCell>Product</TableCell>
                     <TableCell align="center">Amount</TableCell>
                     <TableCell align="center">Price</TableCell>
+                    <TableCell align="center">Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {product.map((p) => (
                     <TableRow
-                      key={p.name}
+                      key={p.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <Checkbox
-                        color="primary"
-                        inputProps={{
-                          "aria-label": "select all desserts",
-                        }}
-                      />
+                      <Checkbox color="primary" />
                       <TableCell component="th" scope="row">
                         {p.name}
                       </TableCell>
@@ -94,6 +106,7 @@ export default function Cart() {
                           currency: "IDR",
                         }).format(p.price)}
                       </TableCell>
+                      <TableCell></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { api } from "../constant/constant";
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -15,7 +13,6 @@ import {
 import { Divider } from "@mui/material";
 import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 import MenuIcon from "@mui/icons-material/Menu";
-import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate, NavLink } from "react-router-dom";
 
 function ResponsiveAppBar(props: any) {

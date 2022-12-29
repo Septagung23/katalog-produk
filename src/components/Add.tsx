@@ -37,109 +37,101 @@ export default function Add() {
         sx={{
           width: "auto",
           display: "flex",
+          alignSelf: "center",
           justifyContent: "center",
+          flexDirection: "column",
         }}
       >
+        <AddCircleRoundedIcon
+          fontSize="large"
+          sx={{ alignSelf: "center", mt: 2 }}
+        />
         <Box
           sx={{
-            width: "50%",
-            display: "flex",
             alignSelf: "center",
-            justifyContent: "center",
-            flexDirection: "column",
             backgroundColor: "#bde0fe",
             borderRadius: 5,
-            mt: 4,
           }}
         >
-          <AddCircleRoundedIcon
-            fontSize="large"
-            sx={{ alignSelf: "center", mt: 2 }}
-          />
-          <Box
-            sx={{
-              alignSelf: "center",
-            }}
-          >
-            <Typography sx={{ p: 2 }} variant="h5">
-              Add a Product
-            </Typography>
-          </Box>
+          <Typography sx={{ p: 2 }} variant="h5">
+            Add a Product
+          </Typography>
         </Box>
-      </Box>
-      <Box
-        component="form"
-        onSubmit={createProduct}
-        sx={{
-          width: "auto",
-          m: 4,
-          display: "flex",
-          justifyContent: "flex-start",
-          alignContent: "space-around",
-          flexWrap: "wrap",
-          gap: 1,
-        }}
-      >
-        <label>Nama Produk</label>
-        <TextField
-          required
-          fullWidth
-          id="outlined-name"
-          label="Name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-        <label>Deskripsi Produk</label>
-        <TextField
-          required
-          fullWidth
-          id="outlined-Descriptionription"
-          label="Descriptionription"
-          multiline
-          rows={4}
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
-        <label>Stok Produk</label>
-        <TextField
-          required
-          fullWidth
-          id="outlined-Stock"
-          label="Stock"
-          type="number"
-          value={stock}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-          onChange={(event) => setStock(event.target.value)}
-        />
-        <label>SKU Produk</label>
-        <TextField
-          required
-          fullWidth
-          id="outlined-SKU"
-          label="SKU"
-          value={sku}
-          onChange={(event) => setSku(event.target.value)}
-        />
-        <label>Harga Produk</label>
-        <TextField
-          required
-          fullWidth
-          id="outlined-Price"
-          label="Price"
-          type="number"
-          value={price}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-          onChange={(event) => setPrice(event.target.value)}
-        />
 
-        <Button type="submit" variant="outlined" color="primary">
-          Submit
-        </Button>
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <Button variant="outlined" color="error">
-            Back
+        <Box
+          component="form"
+          onSubmit={createProduct}
+          sx={{
+            width: "auto",
+            m: 4,
+            display: "flex",
+            justifyContent: "flex-start",
+            alignContent: "space-around",
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <label>Nama Produk</label>
+          <TextField
+            required
+            fullWidth
+            id="outlined-name"
+            label="Name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+          <label>Deskripsi Produk</label>
+          <TextField
+            required
+            fullWidth
+            id="outlined-Description"
+            label="Description"
+            multiline
+            rows={4}
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+          <label>Stok Produk</label>
+          <TextField
+            required
+            fullWidth
+            id="outlined-Stock"
+            label="Stock"
+            type="number"
+            value={stock}
+            inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+            onChange={(event) => setStock(event.target.value)}
+          />
+          <label>SKU Produk</label>
+          <TextField
+            required
+            fullWidth
+            id="outlined-SKU"
+            label="SKU"
+            value={sku}
+            onChange={(event) => setSku(event.target.value)}
+          />
+          <label>Harga Produk</label>
+          <TextField
+            required
+            fullWidth
+            id="outlined-Price"
+            label="Price"
+            type="number"
+            value={price}
+            inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+            onChange={(event) => setPrice(event.target.value)}
+          />
+
+          <Button type="submit" variant="outlined" color="primary">
+            Submit
           </Button>
-        </Link>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Button variant="outlined" color="error">
+              Back
+            </Button>
+          </Link>
+        </Box>
       </Box>
     </div>
   );

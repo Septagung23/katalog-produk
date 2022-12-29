@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   TextField,
@@ -18,10 +18,17 @@ export default function BasicCard(props: any) {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [addToCart, setAddToCart] = useState<null | HTMLElement>(null);
   const [data, setData] = useState<string>("");
+  const [productName, setProductname] = useState<string>("");
+  const [productId, setProductId] = useState<string>("");
   const [itemError, setItemError] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+
+  const handleOpen = (p: string, pId: string) => {
+    setOpen(true);
+    setProductname(p);
+    setProductId(pId);
+  };
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
@@ -33,7 +40,7 @@ export default function BasicCard(props: any) {
     const response = await axios.get(`${api}/product`);
     setProduct(response.data);
   };
-
+  const token = window.localStorage.getItem("jwt");
   const deleteProduct = async (id: any) => {
     try {
       await axios.delete(`${api}/product/${id}`);
@@ -52,11 +59,20 @@ export default function BasicCard(props: any) {
   const addtoCart = async (e: any, productId: string) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${api}/item`, {
-        amount: parseInt(amount),
-        userId: props.id,
-        productId,
-      });
+      const res = await axios.post(
+        `${api}/transaction`,
+        {
+          amount: parseInt(amount),
+          userId: props.id,
+          productId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(productId);
     } catch (error: any) {
       console.log(error);
     }
@@ -69,13 +85,16 @@ export default function BasicCard(props: any) {
         return p.name.indexOf(query) === 0;
       })
       .map((p) => (
-        <Card key={p.id} sx={{ width: 200, m: 2 }}>
+        <Card
+          key={p.id}
+          sx={{ width: 200, m: 2, boxShadow: 3, borderRadius: 5 }}
+        >
           <CardContent>
             <Typography variant="h5" component="div">
               {p.name}
             </Typography>
-            <Typography variant="caption" component="div">
-              {p.id}
+            <Typography variant="caption" color="GrayText" component="div">
+              {p.sku}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               {new Intl.NumberFormat("id-ID", {
@@ -97,7 +116,7 @@ export default function BasicCard(props: any) {
           )}
           {!props.admin && (
             <>
-              <Button sx={{ mx: 1 }} onClick={handleOpen}>
+              <Button sx={{ mx: 1 }} onClick={() => handleOpen(p.name, p.id)}>
                 Add to Cart
               </Button>
               <Modal
@@ -124,7 +143,7 @@ export default function BasicCard(props: any) {
                     variant="h6"
                     component="h2"
                   >
-                    Amount of {p.name}
+                    Amount of {productName}
                   </Typography>
                   <TextField
                     id="standard-basic"
@@ -136,7 +155,7 @@ export default function BasicCard(props: any) {
                   />
                   <Box
                     component="form"
-                    onSubmit={(event) => addtoCart(event, p.id)}
+                    onSubmit={(event) => addtoCart(event, productId)}
                     sx={{ mt: 2 }}
                   >
                     <Button variant="contained" type="submit">
@@ -172,8 +191,8 @@ export default function BasicCard(props: any) {
           width: "auto",
           m: 4,
           display: "flex",
-          justifyContent: "space-around",
-          alignContent: "space-around",
+          justifyContent: "space-between",
+          alignContent: "space-between",
           flexWrap: "wrap",
         }}
       >

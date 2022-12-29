@@ -16,6 +16,7 @@ export default function Register() {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [values, setValues] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -94,11 +95,19 @@ export default function Register() {
             required
             id="outlined-required"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-          <FormControlLabel control={<Checkbox />} label="Show Password" />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showPassword}
+                onChange={(event) => setShowPassword(event.target.checked)}
+              />
+            }
+            label="Show Password"
+          />
           <Button
             type="submit"
             sx={{ mt: 2, mb: 1 }}

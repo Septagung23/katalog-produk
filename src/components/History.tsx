@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "../constant/constant";
 import ResponsiveAppBar from "../assets/Navbar";
 import {
   Box,
   Typography,
-  Divider,
   Table,
   TableBody,
   TableHead,
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
-  ThemeProvider,
 } from "@mui/material";
-import Button from "@mui/material/Button";
-import { isAbsolute } from "path";
 
 export default function History() {
   const [product, setProduct] = useState<any[]>([]);

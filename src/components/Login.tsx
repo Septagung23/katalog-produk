@@ -1,13 +1,21 @@
-import { TextField, Box, Button, Typography } from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { api } from "../constant/constant";
+import LockIcon from "@mui/icons-material/Lock";
+import axios from "axios";
+import {
+  TextField,
+  Box,
+  Button,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: any) => {
@@ -77,10 +85,19 @@ export default function Login() {
           <TextField
             required
             id="outlined-required"
-            type="password"
+            type={showPassword ? "text" : "password"}
             label="Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showPassword}
+                onChange={(event) => setShowPassword(event.target.checked)}
+              />
+            }
+            label="Show Password"
           />
           <Button
             type="submit"
