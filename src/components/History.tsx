@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { api } from "../constant/constant";
+import axios from "axios";
 import ResponsiveAppBar from "../assets/Navbar";
+import { useUserId } from "./PrivateRoutes";
 import {
   Box,
   Typography,
@@ -16,17 +17,51 @@ import {
 
 export default function History() {
   const [product, setProduct] = useState<any[]>([]);
-  const [query, setQuery] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { userId } = useUserId();
   const navigate = useNavigate();
-  useEffect(() => {
-    getproduct();
-  }, []);
 
-  const getproduct = async () => {
-    const response = await axios.get(`${api}/product`);
-    setProduct(response.data);
-  };
+  // useEffect(() => {
+  //   getTransaction();
+  // }, [userId]);
+
+  // // const getTransaction = async () => {
+  // //   setIsLoading(true);
+  // //   try {
+  // //     const token = window.localStorage.getItem("jwt");
+  // //     const res = await axios.get(`${api}/transaction/item/${userId}`, {
+  // //       headers: {
+  // //         Authorization: `Bearer ${token}`,
+  // //       },
+  // //     });
+  // //     // const res = await axios.get(`${api}/product`);
+  // //     setProduct(res.data);
+  // //     console.log(res);
+  // //     setIsLoading(false);
+  // //   } catch (error: any) {
+  // //     console.log(error);
+  // //     setIsLoading(false);
+  // //   }
+  // // };
+
+  if (isLoading === true) {
+    return (
+      <h1
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        Wait a Sec ...
+      </h1>
+    );
+  }
+
+  product.map((p) => {
+    console.log("Data : ", p);
+  });
+
   return (
     <>
       <ResponsiveAppBar admin={isAdmin} />
@@ -37,7 +72,7 @@ export default function History() {
           position: "fixed",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#dddddd",
+          backgroundColor: "#caf0f8",
         }}
       >
         <Typography sx={{ alignSelf: "center" }} variant="h1">
@@ -57,7 +92,6 @@ export default function History() {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>No</TableCell>
                   <TableCell>Product</TableCell>
                   <TableCell align="center">Amount</TableCell>
                   <TableCell align="center">Price</TableCell>
@@ -67,25 +101,24 @@ export default function History() {
               <TableBody>
                 {product.map((p) => (
                   <TableRow
-                    key={p.name}
+                    key={p.product.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell>1</TableCell>
                     <TableCell component="th" scope="row">
-                      {p.name}
+                      {p.product.name}
                     </TableCell>
-                    <TableCell align="center">{p.stock}</TableCell>
+                    <TableCell align="center">{p.amount}</TableCell>
                     <TableCell align="center">
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
-                      }).format(p.price)}
+                      }).format(p.product.price)}
                     </TableCell>
                     <TableCell align="center">
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
-                      }).format(p.price * p.stock)}
+                      }).format(p.product.price * p.amount)}
                     </TableCell>
                   </TableRow>
                 ))}

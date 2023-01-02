@@ -23,6 +23,7 @@ export default function BasicCard(props: any) {
   const [itemError, setItemError] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpen = (p: string, pId: string) => {
     setOpen(true);
@@ -30,8 +31,10 @@ export default function BasicCard(props: any) {
     setProductId(pId);
   };
   const handleClose = () => setOpen(false);
-  const navigate = useNavigate();
-
+  const handleSucces = () => {
+    setOpen(false);
+    return alert("Product successfully added to cart");
+  };
   useEffect(() => {
     getproduct();
   }, []);
@@ -41,6 +44,7 @@ export default function BasicCard(props: any) {
     setProduct(response.data);
   };
   const token = window.localStorage.getItem("jwt");
+
   const deleteProduct = async (id: any) => {
     try {
       await axios.delete(`${api}/product/${id}`);
@@ -72,10 +76,12 @@ export default function BasicCard(props: any) {
           },
         }
       );
+      console.log(res.data);
       console.log(productId);
     } catch (error: any) {
       console.log(error);
     }
+    setOpen(false);
   };
 
   let items;
@@ -87,14 +93,14 @@ export default function BasicCard(props: any) {
       .map((p) => (
         <Card
           key={p.id}
-          sx={{ width: 200, m: 2, boxShadow: 3, borderRadius: 5 }}
+          sx={{ width: 200, mx: 2, mb: 5, boxShadow: 3, borderRadius: 5 }}
         >
           <CardContent>
             <Typography variant="h5" component="div">
               {p.name}
             </Typography>
             <Typography variant="caption" color="GrayText" component="div">
-              {p.sku}
+              {p.stock}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               {new Intl.NumberFormat("id-ID", {
@@ -156,10 +162,19 @@ export default function BasicCard(props: any) {
                   <Box
                     component="form"
                     onSubmit={(event) => addtoCart(event, productId)}
-                    sx={{ mt: 2 }}
+                    sx={{
+                      mt: 2,
+                    }}
                   >
-                    <Button variant="contained" type="submit">
+                    <Button variant="contained" type="submit" sx={{ mr: 1 }}>
                       Add
+                    </Button>
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      color="error"
+                    >
+                      Cancel
                     </Button>
                   </Box>
                 </Box>
@@ -173,12 +188,16 @@ export default function BasicCard(props: any) {
   return (
     <Box
       sx={{
-        width: "auto",
-        m: 4,
+        width: "100%",
+        minHeight: "30vh",
+        backgroundColor: "#caf0f8",
       }}
     >
       <Box component="form">
         <TextField
+          sx={{
+            m: 3,
+          }}
           id="search"
           label="Search Product"
           variant="standard"
@@ -187,13 +206,14 @@ export default function BasicCard(props: any) {
         />
       </Box>
       <Box
+        className="Card"
         sx={{
           width: "auto",
-          m: 4,
+          mx: 4,
           display: "flex",
           justifyContent: "space-between",
           alignContent: "space-between",
-          flexWrap: "wrap",
+          backgroundColor: "#caf0f8",
         }}
       >
         {items}

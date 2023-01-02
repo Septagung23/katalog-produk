@@ -25,7 +25,6 @@ export default function PrivateRoutes() {
         },
       });
       setData(response.data);
-      console.log("ID : ", response.data.user.id);
       setUserId(response.data.user.id);
     } catch (error: any) {
       console.log(error);

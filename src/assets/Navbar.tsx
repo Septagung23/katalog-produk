@@ -97,26 +97,28 @@ function ResponsiveAppBar(props: any) {
                   <Button sx={{ my: 2, display: "block" }}>Product</Button>
                 </NavLink>
               </MenuItem>
-              <MenuItem>
-                {isAdmin ? (
-                  <>
-                    <NavLink to="/add" style={{ textDecoration: "none" }}>
-                      <Button sx={{ my: 2, display: "block", mr: 1 }}>
-                        Tambah
-                      </Button>
-                    </NavLink>
-                  </>
-                ) : (
-                  <>
+              {props.admin ? (
+                <MenuItem>
+                  <NavLink to="/add" style={{ textDecoration: "none" }}>
+                    <Button sx={{ my: 2, display: "block", mr: 1 }}>
+                      Tambah
+                    </Button>
+                  </NavLink>
+                </MenuItem>
+              ) : (
+                <div>
+                  <MenuItem>
                     <NavLink to="/cart" style={{ textDecoration: "none" }}>
                       <Button sx={{ my: 2, display: "block" }}>Cart</Button>
                     </NavLink>
+                  </MenuItem>
+                  <MenuItem>
                     <NavLink to="/History" style={{ textDecoration: "none" }}>
                       <Button sx={{ my: 2, display: "block" }}>History</Button>
                     </NavLink>
-                  </>
-                )}
-              </MenuItem>
+                  </MenuItem>
+                </div>
+              )}
             </Menu>
           </Box>
           <Box

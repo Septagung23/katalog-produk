@@ -5,6 +5,7 @@ import axios from "axios";
 import BoxSx from "../assets/Hero";
 import BasicCard from "../assets/Card";
 import ResponsiveAppBar from "../assets/Navbar";
+import { Box, Paper } from "@mui/material/";
 
 export default function HalUtama() {
   const [data, setData] = useState<any>({});
@@ -43,15 +44,25 @@ export default function HalUtama() {
       console.log(error);
     }
   };
-  if (isLoading) {
-    return <h1 style={{ top: "50%", left: "50%" }}>Wait a Sec ...</h1>;
+
+  if (isLoading === true) {
+    return (
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Wait a Sec ...
+      </h1>
+    );
   }
 
   return (
-    <div className="App">
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "#caf0f8",
+      }}
+    >
       <ResponsiveAppBar admin={isAdmin} />
       <BoxSx />
       <BasicCard admin={isAdmin} id={id} />
-    </div>
+    </Box>
   );
 }

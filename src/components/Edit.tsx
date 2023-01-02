@@ -46,7 +46,7 @@ export default function Edit() {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: "#caf0f8" }}>
       <Box
         sx={{
           width: "auto",

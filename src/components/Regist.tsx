@@ -1,3 +1,6 @@
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { api } from "../constant/constant";
 import {
   TextField,
   Box,
@@ -7,9 +10,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { api } from "../constant/constant";
 import axios from "axios";
 
 export default function Register() {
