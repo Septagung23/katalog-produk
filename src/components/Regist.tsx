@@ -17,13 +17,12 @@ export default function Register() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [values, setValues] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      const response = await axios.post(`${api}/auth/register`, {
+      await axios.post(`${api}/auth/register`, {
         username,
         email,
         password,

@@ -7,7 +7,6 @@ import axios from "axios";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
-import sumArray from "../utils/sumArray";
 import {
   Box,
   Typography,
@@ -22,24 +21,23 @@ import {
 } from "@mui/material";
 
 export default function Cart() {
-  const [product, setProduct] = useState<any[]>([]);
+  const [transaction, setTransaction] = useState<any>();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [subTotal, setSubTotal] = useState<any>();
-  const [amount, setAmount] = useState<string>("");
+  const [transactionItems, setTransactionItems] = useState<[]>([]);
   const { userId } = useUserId();
   const navigate = useNavigate();
+  const token = window.localStorage.getItem("jwt");
 
-  // let transactionId: any = product.map((t) => {
-  //   console.log(t.transaction.id);
-  // });
-
-  let sub: any = product.map((p) => {
-    return <div key={p.id}>{p.subtotal}</div>;
-  });
-
-  let subArr: any = product.map((pArr) => {
-    return pArr.subtotal;
+  let sub = transactionItems.map((ti: any) => {
+    return (
+      <div key={ti.id}>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(ti.subtotal)}
+      </div>
+    );
   });
 
   useEffect(() => {
@@ -49,25 +47,35 @@ export default function Cart() {
   const getTransaction = async () => {
     setIsLoading(true);
     try {
-      const token = window.localStorage.getItem("jwt");
       const res = await axios.get(`${api}/transaction/item/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setProduct(res.data);
+      setTransaction(res.data);
+      setTransactionItems(res.data.transaction_items);
+      console.log(res.data);
       setIsLoading(false);
     } catch (error: any) {
       console.log(error);
       setIsLoading(false);
     }
   };
+  console.log(transaction);
 
   const increaseAmount = async (id: string, amount: string) => {
     try {
-      const inc = await axios.patch(`${api}/transaction/item-increase/${id}`, {
-        amount: parseInt(amount),
-      });
+      await axios.patch(
+        `${api}/transaction/item-increase/${id}`,
+        {
+          amount: parseInt(amount),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       getTransaction();
     } catch (error: any) {
       console.log(error);
@@ -76,9 +84,17 @@ export default function Cart() {
 
   const decreaseAmount = async (id: string, amount: string) => {
     try {
-      await axios.patch(`${api}/transaction/item-decrease/${id}`, {
-        amount: parseInt(amount),
-      });
+      await axios.patch(
+        `${api}/transaction/item-decrease/${id}`,
+        {
+          amount: parseInt(amount),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       getTransaction();
     } catch (error: any) {
       console.log(error);
@@ -88,7 +104,11 @@ export default function Cart() {
   const deleteProduct = async (id: any) => {
     console.log(id);
     try {
-      await axios.delete(`${api}/transaction/item/${id}`);
+      await axios.delete(`${api}/transaction/item/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       getTransaction();
     } catch (error: any) {
       console.log(error);
@@ -97,24 +117,33 @@ export default function Cart() {
 
   const checkOut = async (transactionId: string) => {
     try {
-      await axios.patch(`${api}/transaction/checkout`, {
-        transactionId: parseInt(transactionId),
-      });
+      await axios.patch(
+        `${api}/transaction/checkout/${transactionId}`,
+        { transactionItems: JSON.stringify(transactionItems) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      navigate("/");
     } catch (error: any) {
       console.log(error);
     }
   };
 
-  if (isLoading === true) {
+  if (isLoading) {
     return (
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
+      <Box
+        sx={{
+          position: "absolute" as "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       >
-        Wait a Sec ...
-      </h1>
+        <h1>Wait a Sec ...</h1>
+      </Box>
     );
   }
 
@@ -161,51 +190,59 @@ export default function Cart() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {product.map((p) => (
-                    <TableRow
-                      key={p.product.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {p.product.name}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Button
-                            onClick={() => decreaseAmount(p.id, p.amount)}
+                  {transactionItems.map((item: any) => {
+                    return (
+                      <TableRow
+                        key={item.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {item.product.name}
+                        </TableCell>
+                        <TableCell align="center">
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
                           >
-                            <RemoveCircleRoundedIcon color="error" />
+                            <Button
+                              onClick={() =>
+                                decreaseAmount(item.id, item.amount)
+                              }
+                            >
+                              <RemoveCircleRoundedIcon color="error" />
+                            </Button>
+                            <Box>{item.amount}</Box>
+                            <Button
+                              onClick={() =>
+                                increaseAmount(item.id, item.amount)
+                              }
+                            >
+                              <AddCircleRoundedIcon />
+                            </Button>
+                          </Box>
+                        </TableCell>
+                        <TableCell align="center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.subtotal)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {transaction.status}
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button onClick={() => deleteProduct(item.id)}>
+                            <DeleteRoundedIcon color="error" fontSize="large" />
                           </Button>
-                          <Box>{p.amount}</Box>
-                          <Button
-                            onClick={() => increaseAmount(p.id, p.amount)}
-                          >
-                            <AddCircleRoundedIcon />
-                          </Button>
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(p.product.price)}
-                      </TableCell>
-                      <TableCell align="center">
-                        {p.transaction.status}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button onClick={() => deleteProduct(p.id)}>
-                          <DeleteRoundedIcon color="error" fontSize="large" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -215,8 +252,8 @@ export default function Cart() {
             sx={{
               width: "40%",
               backgroundColor: "lightgoldenrodyellow",
-              borderTopLeftRadius: 5,
-              borderBottomRightRadius: 5,
+              borderTopLeftRadius: "16px",
+              borderBottomRightRadius: "16px",
               m: 1,
               ml: 0,
             }}
@@ -254,8 +291,13 @@ export default function Cart() {
                 my: 4,
               }}
             >
-              <Typography variant="overline">Total</Typography>
-              <Typography variant="overline">{sumArray(subArr)}</Typography>
+              <Typography variant="subtitle2">Total</Typography>
+              <Typography variant="subtitle2">
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(transaction ? transaction.total : 0)}
+              </Typography>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end", m: 2 }}>
               <Link to="/" style={{ textDecoration: "none" }}>
@@ -265,7 +307,7 @@ export default function Cart() {
               </Link>
               <Button
                 variant="contained"
-                onClick={() => checkOut(product[0].transaction.id)}
+                onClick={() => checkOut(transaction.id)}
               >
                 Check Out
               </Button>

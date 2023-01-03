@@ -12,19 +12,27 @@ export default function Add() {
   const [stock, setStock] = useState<string>("");
   const [sku, setSku] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
+  const token = window.localStorage.getItem("jwt");
 
   const createProduct = async (event: any) => {
     event.preventDefault();
     try {
-      await axios.post(`${api}/product`, {
-        name,
-        description,
-        stock: parseInt(stock),
-        sku,
-        price: parseInt(price),
-      });
+      await axios.post(
+        `${api}/product`,
+        {
+          name,
+          description,
+          stock: parseInt(stock),
+          sku,
+          price: parseInt(price),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/");
     } catch (error: any) {
       console.log(error);
@@ -32,7 +40,13 @@ export default function Add() {
   };
 
   return (
-    <div style={{ backgroundColor: "#caf0f8" }}>
+    <Box
+      style={{
+        width: "100%",
+        height: "107vh",
+        backgroundColor: "#caf0f8",
+      }}
+    >
       <Box
         sx={{
           width: "auto",
@@ -132,16 +146,15 @@ export default function Add() {
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
           onChange={(event) => setPrice(event.target.value)}
         />
-
         <Button type="submit" variant="outlined" color="primary">
           Submit
         </Button>
         <Link to="/" style={{ textDecoration: "none" }}>
-          <Button variant="outlined" color="error">
+          <Button variant="outlined" color="error" sx={{ ml: 2 }}>
             Back
           </Button>
         </Link>
       </Box>
-    </div>
+    </Box>
   );
 }

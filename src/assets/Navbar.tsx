@@ -37,7 +37,7 @@ function ResponsiveAppBar(props: any) {
 
   return (
     // Logo + Judul
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AlbumRoundedIcon
@@ -150,7 +150,7 @@ function ResponsiveAppBar(props: any) {
                     Cart
                   </Button>
                 </NavLink>
-                <NavLink to="/History" style={{ textDecoration: "none" }}>
+                <NavLink to="/history" style={{ textDecoration: "none" }}>
                   <Button sx={{ my: 2, color: "white", display: "block" }}>
                     History
                   </Button>

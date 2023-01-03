@@ -47,7 +47,11 @@ export default function BasicCard(props: any) {
 
   const deleteProduct = async (id: any) => {
     try {
-      await axios.delete(`${api}/product/${id}`);
+      await axios.delete(`${api}/product/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       getproduct();
     } catch (error: any) {
       console.log(error);
@@ -76,8 +80,6 @@ export default function BasicCard(props: any) {
           },
         }
       );
-      console.log(res.data);
-      console.log(productId);
     } catch (error: any) {
       console.log(error);
     }
@@ -88,19 +90,19 @@ export default function BasicCard(props: any) {
   if (product) {
     items = product
       .filter((p) => {
-        return p.name.indexOf(query) === 0;
+        return p.name.toLowerCase().indexOf(query.toLowerCase()) === 0;
       })
       .map((p) => (
         <Card
           key={p.id}
-          sx={{ width: 200, mx: 2, mb: 5, boxShadow: 3, borderRadius: 5 }}
+          sx={{ width: 200, mx: 5, mb: 5, boxShadow: 3, borderRadius: 5 }}
         >
           <CardContent>
             <Typography variant="h5" component="div">
               {p.name}
             </Typography>
             <Typography variant="caption" color="GrayText" component="div">
-              {p.stock}
+              Stok : {p.stock}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
               {new Intl.NumberFormat("id-ID", {
@@ -155,6 +157,9 @@ export default function BasicCard(props: any) {
                     id="standard-basic"
                     variant="standard"
                     type="number"
+                    InputProps={{
+                      inputProps: { min: 1 },
+                    }}
                     required
                     value={amount}
                     onChange={(event) => setAmount(event.target.value)}
@@ -211,7 +216,7 @@ export default function BasicCard(props: any) {
           width: "auto",
           mx: 4,
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           alignContent: "space-between",
           backgroundColor: "#caf0f8",
         }}

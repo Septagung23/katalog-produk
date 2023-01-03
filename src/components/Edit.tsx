@@ -13,8 +13,8 @@ export default function Edit() {
   const [stock, setStock] = useState<string>("");
   const [sku, setSku] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
+  const token = window.localStorage.getItem("jwt");
 
   useEffect(() => {
     getProductById();
@@ -22,13 +22,21 @@ export default function Edit() {
   const updateProduct = async (event: any) => {
     event.preventDefault();
     try {
-      await axios.patch(`${api}/product/${id}`, {
-        name,
-        description,
-        stock: parseInt(stock),
-        sku,
-        price: parseInt(price),
-      });
+      await axios.patch(
+        `${api}/product/${id}`,
+        {
+          name,
+          description,
+          stock: parseInt(stock),
+          sku,
+          price: parseInt(price),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/");
     } catch (error: any) {
       console.log(error);
@@ -46,7 +54,13 @@ export default function Edit() {
   };
 
   return (
-    <div style={{ backgroundColor: "#caf0f8" }}>
+    <Box
+      style={{
+        width: "100%",
+        height: "107vh",
+        backgroundColor: "#caf0f8",
+      }}
+    >
       <Box
         sx={{
           width: "auto",
@@ -155,6 +169,6 @@ export default function Edit() {
           </Button>
         </Link>
       </Box>
-    </div>
+    </Box>
   );
 }

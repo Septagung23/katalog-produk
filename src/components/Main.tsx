@@ -5,7 +5,7 @@ import axios from "axios";
 import BoxSx from "../assets/Hero";
 import BasicCard from "../assets/Card";
 import ResponsiveAppBar from "../assets/Navbar";
-import { Box, Paper } from "@mui/material/";
+import { Box } from "@mui/material/";
 
 export default function HalUtama() {
   const [data, setData] = useState<any>({});
@@ -47,9 +47,16 @@ export default function HalUtama() {
 
   if (isLoading === true) {
     return (
-      <h1 style={{ display: "flex", justifyContent: "center" }}>
-        Wait a Sec ...
-      </h1>
+      <Box
+        sx={{
+          position: "absolute" as "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <h1>Wait a Sec ...</h1>
+      </Box>
     );
   }
 

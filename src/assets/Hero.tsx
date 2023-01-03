@@ -11,16 +11,14 @@ export default function BoxSx() {
         height: 500,
         borderBottomLeftRadius: "20px",
         borderBottomRightRadius: "20px",
-        boxShadow: 5,
-        // backgroundImage: { gambs1 },
-        background:
-          "linear-gradient(50deg, rgba(15,9,106,1) 0%, rgba(7,7,111,1) 14%, rgba(20,20,134,1) 31%, rgba(13,13,156,1) 53%, rgba(0,212,255,1) 100%);",
       }}
     >
       <Card
         sx={{
           width: "100%",
           position: "absolute",
+          borderTopLeftRadius: 1,
+          borderTopRightRadius: 1,
           borderBottomLeftRadius: "20px",
           borderBottomRightRadius: "20px",
         }}

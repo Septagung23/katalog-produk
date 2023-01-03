@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../constant/constant";
+import { useUserId } from "./PrivateRoutes";
 import axios from "axios";
 import ResponsiveAppBar from "../assets/Navbar";
-import { useUserId } from "./PrivateRoutes";
+import dayjs from "dayjs";
 import {
   Box,
   Typography,
@@ -13,54 +13,51 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Divider,
 } from "@mui/material";
 
 export default function History() {
-  const [product, setProduct] = useState<any[]>([]);
+  const [transaction, setTransaction] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { userId } = useUserId();
-  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   getTransaction();
-  // }, [userId]);
+  useEffect(() => {
+    getTransaction();
+  }, [userId]);
 
-  // // const getTransaction = async () => {
-  // //   setIsLoading(true);
-  // //   try {
-  // //     const token = window.localStorage.getItem("jwt");
-  // //     const res = await axios.get(`${api}/transaction/item/${userId}`, {
-  // //       headers: {
-  // //         Authorization: `Bearer ${token}`,
-  // //       },
-  // //     });
-  // //     // const res = await axios.get(`${api}/product`);
-  // //     setProduct(res.data);
-  // //     console.log(res);
-  // //     setIsLoading(false);
-  // //   } catch (error: any) {
-  // //     console.log(error);
-  // //     setIsLoading(false);
-  // //   }
-  // // };
+  const getTransaction = async () => {
+    setIsLoading(true);
+    try {
+      const token = window.localStorage.getItem("jwt");
+      const res = await axios.get(`${api}/transaction/history/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTransaction(res.data);
+      console.log(res.data);
+      setIsLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
 
   if (isLoading === true) {
     return (
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
+      <Box
+        sx={{
+          position: "absolute" as "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       >
-        Wait a Sec ...
-      </h1>
+        <h1>Wait a Sec ...</h1>
+      </Box>
     );
   }
-
-  product.map((p) => {
-    console.log("Data : ", p);
-  });
 
   return (
     <>
@@ -69,8 +66,8 @@ export default function History() {
         sx={{
           width: "100%",
           height: 1,
-          position: "fixed",
           display: "flex",
+          position: "absolute",
           flexDirection: "column",
           backgroundColor: "#caf0f8",
         }}
@@ -78,54 +75,102 @@ export default function History() {
         <Typography sx={{ alignSelf: "center" }} variant="h1">
           Transaction History
         </Typography>
-        <Box
-          sx={{
-            width: "auto",
-            display: "flex",
-            justifyContent: "center",
-            m: 4,
-            borderRadius: 8,
-            backgroundColor: "white",
-          }}
-        >
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product</TableCell>
-                  <TableCell align="center">Amount</TableCell>
-                  <TableCell align="center">Price</TableCell>
-                  <TableCell align="center">Total Price</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {product.map((p) => (
-                  <TableRow
-                    key={p.product.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {p.product.name}
-                    </TableCell>
-                    <TableCell align="center">{p.amount}</TableCell>
-                    <TableCell align="center">
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      }).format(p.product.price)}
-                    </TableCell>
-                    <TableCell align="center">
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      }).format(p.product.price * p.amount)}
-                    </TableCell>
+        {transaction.map((p) => (
+          <Box
+            key={p.id}
+            sx={{
+              width: "auto",
+              display: "block",
+              justifyContent: "center",
+              mx: 4,
+              my: 2,
+              borderRadius: 8,
+              backgroundColor: "white",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                px: 2,
+                py: 2,
+              }}
+            >
+              <Typography variant="h5">
+                Date: {dayjs(p.created_at).format("DD-MMM-YYYY")}
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  backgroundColor: p.status === "Paid" ? "#9ef01a" : "#e5383b",
+                  color: p.status === "Paid" ? "#000000" : "#ffffff",
+                  borderRadius: "10px",
+                }}
+              >
+                <Typography
+                  sx={{
+                    p: 1,
+                  }}
+                >
+                  {p.status}
+                </Typography>
+                <Divider orientation="vertical" />
+                <Typography
+                  sx={{
+                    p: 1,
+                  }}
+                >
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(p.total)}
+                </Typography>
+              </Box>
+            </Box>
+            <TableContainer sx={{ mb: 4 }}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Product</TableCell>
+                    <TableCell align="center">Amount</TableCell>
+                    <TableCell align="center">Price</TableCell>
+                    <TableCell align="center">Subtotal</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+                </TableHead>
+                <TableBody>
+                  {p.transaction_items.map((ti: any) => {
+                    return (
+                      <TableRow
+                        key={ti.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {ti.product.name}
+                        </TableCell>
+                        <TableCell align="center">{ti.amount}</TableCell>
+                        <TableCell align="center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(ti.product.price)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(ti.subtotal)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        ))}
       </Box>
     </>
   );
