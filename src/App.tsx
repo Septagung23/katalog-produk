@@ -4,6 +4,7 @@ import Add from "./components/Add";
 import Edit from "./components/Edit";
 import Login from "./components/Login";
 import Register from "./components/Regist";
+import Payment from "./components/Payment";
 import PrivateRoutes from "./components/PrivateRoutes";
 import PublicRoutes from "./components/PublicRoutes";
 import AdminRoutes from "./components/AdminRoutes";
@@ -23,6 +24,7 @@ function App() {
         <Route element={<AdminRoutes />}>
           <Route path="/add" element={<Add />} />
           <Route path="/edit/:id" element={<Edit />} />
+          <Route path="/payment" element={<Payment />} />
         </Route>
         <Route element={<PublicRoutes />}>
           <Route path="/register" element={<Register />} />

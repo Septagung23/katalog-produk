@@ -65,9 +65,8 @@ export default function History() {
       <Box
         sx={{
           width: "100%",
-          height: 1,
+          minHeight: "100%",
           display: "flex",
-          position: "absolute",
           flexDirection: "column",
           backgroundColor: "#caf0f8",
         }}

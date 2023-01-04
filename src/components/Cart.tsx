@@ -61,7 +61,6 @@ export default function Cart() {
       setIsLoading(false);
     }
   };
-  console.log(transaction);
 
   const increaseAmount = async (id: string, amount: string) => {
     try {
@@ -102,7 +101,6 @@ export default function Cart() {
   };
 
   const deleteProduct = async (id: any) => {
-    console.log(id);
     try {
       await axios.delete(`${api}/transaction/item/${id}`, {
         headers: {
@@ -230,7 +228,7 @@ export default function Cart() {
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
-                          }).format(item.subtotal)}
+                          }).format(item.product.price)}
                         </TableCell>
                         <TableCell align="center">
                           {transaction.status}

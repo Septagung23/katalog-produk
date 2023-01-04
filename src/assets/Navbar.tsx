@@ -17,7 +17,6 @@ import { useNavigate, NavLink } from "react-router-dom";
 
 function ResponsiveAppBar(props: any) {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,8 +26,6 @@ function ResponsiveAppBar(props: any) {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
-  const [data, setData] = useState<any>({});
 
   const handleLogout = async () => {
     window.localStorage.removeItem("jwt");
@@ -140,6 +137,13 @@ function ResponsiveAppBar(props: any) {
                     sx={{ my: 2, color: "white", display: "block", mr: 1 }}
                   >
                     Tambah
+                  </Button>
+                </NavLink>
+                <NavLink to="/payment" style={{ textDecoration: "none" }}>
+                  <Button
+                    sx={{ my: 2, color: "white", display: "block", mr: 1 }}
+                  >
+                    Payment
                   </Button>
                 </NavLink>
               </>

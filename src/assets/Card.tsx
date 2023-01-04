@@ -9,28 +9,26 @@ import {
   Typography,
   Modal,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api } from "../constant/constant";
 
 export default function BasicCard(props: any) {
   const [product, setProduct] = useState<any[]>([]);
   const [query, setQuery] = useState<string>("");
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [addToCart, setAddToCart] = useState<null | HTMLElement>(null);
-  const [data, setData] = useState<string>("");
   const [productName, setProductname] = useState<string>("");
   const [productId, setProductId] = useState<string>("");
-  const [itemError, setItemError] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("1");
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
 
   const handleOpen = (p: string, pId: string) => {
     setOpen(true);
     setProductname(p);
     setProductId(pId);
   };
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setAmount("1");
+  };
   const handleSucces = () => {
     setOpen(false);
     return alert("Product successfully added to cart");
@@ -84,6 +82,7 @@ export default function BasicCard(props: any) {
       console.log(error);
     }
     setOpen(false);
+    setAmount("1");
   };
 
   let items;
